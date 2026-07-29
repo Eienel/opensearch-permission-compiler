@@ -1,0 +1,32 @@
+[
+  {
+    "step_id": "ppl-query",
+    "response": {
+      "accessAllowed": true,
+      "missingPrivileges": []
+    }
+  },
+  {
+    "step_id": "ppl-autocomplete-settings",
+    "response": {
+      "accessAllowed": true,
+      "missingPrivileges": []
+    }
+  },
+  {
+    "step_id": "must-not-delete-logs",
+    "response": {
+      "accessAllowed": false,
+      "missingPrivileges": [
+        "indices:admin/delete"
+      ]
+    }
+  },
+  {
+    "step_id": "must-not-read-security-index",
+    "response": {
+      "accessAllowed": false,
+      "missingPrivileges": []
+    }
+  }
+]

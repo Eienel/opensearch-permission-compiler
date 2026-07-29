@@ -1,0 +1,42 @@
+[
+  {
+    "step_id": "ppl-query",
+    "response": {
+      "accessAllowed": false,
+      "missingPrivileges": [
+        "cluster:admin/opensearch/ppl",
+        "indices:data/read/search"
+      ]
+    }
+  },
+  {
+    "step_id": "ppl-autocomplete-settings",
+    "response": {
+      "status": 403,
+      "error": {
+        "root_cause": [
+          {
+            "type": "security_exception",
+            "reason": "no permissions for [indices:monitor/settings/get] and User [name=test-user, backend_roles=[], requestedTenant=null]"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "step_id": "must-not-delete-logs",
+    "response": {
+      "accessAllowed": false,
+      "missingPrivileges": [
+        "indices:admin/delete"
+      ]
+    }
+  },
+  {
+    "step_id": "must-not-read-security-index",
+    "response": {
+      "accessAllowed": false,
+      "missingPrivileges": []
+    }
+  }
+]

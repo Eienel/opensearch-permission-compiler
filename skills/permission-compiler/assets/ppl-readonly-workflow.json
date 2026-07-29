@@ -1,0 +1,45 @@
+{
+  "name": "ppl-readonly",
+  "role_name": "ppl-readonly-observed",
+  "steps": [
+    {
+      "id": "ppl-query",
+      "method": "POST",
+      "path": "/_plugins/_ppl",
+      "body": {
+        "query": "source=logs-* | fields @timestamp, message | head 10"
+      },
+      "index_patterns": [
+        "logs-*"
+      ],
+      "expect": "allow"
+    },
+    {
+      "id": "ppl-autocomplete-settings",
+      "method": "GET",
+      "path": "/logs-*/_settings",
+      "index_patterns": [
+        "logs-*"
+      ],
+      "expect": "allow"
+    },
+    {
+      "id": "must-not-delete-logs",
+      "method": "DELETE",
+      "path": "/logs-2026.07.29",
+      "index_patterns": [
+        "logs-*"
+      ],
+      "expect": "deny"
+    },
+    {
+      "id": "must-not-read-security-index",
+      "method": "GET",
+      "path": "/.opendistro_security/_search",
+      "index_patterns": [
+        ".opendistro_security"
+      ],
+      "expect": "deny"
+    }
+  ]
+}
