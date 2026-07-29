@@ -25,3 +25,6 @@ include = ["permission_compiler*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+markers = [
+  "integration: requires a disposable live OpenSearch cluster",
+]

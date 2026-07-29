@@ -5,7 +5,14 @@ import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
 
-from permission_compiler.cli import _permission_check_path, main
+import pytest
+
+from permission_compiler.cli import (
+    _permission_check_path,
+    _ssl_context,
+    main,
+)
+from permission_compiler.core import WorkflowError
 
 
 def test_permission_check_path_preserves_existing_query():
@@ -15,6 +22,11 @@ def test_permission_check_path_preserves_existing_query():
         "perform_permission_check": ["true"],
         "preference": ["local"],
     }
+
+
+def test_skip_hostname_verification_requires_ca():
+    with pytest.raises(WorkflowError, match="requires --ca-cert"):
+        _ssl_context(None, skip_hostname_verification=True)
 
 
 def test_probe_is_permission_check_and_does_not_persist_credentials(

@@ -90,6 +90,18 @@ def test_empty_permission_is_not_invented():
     assert parse_missing_privileges(response) == ()
 
 
+def test_unexpected_ppl_exception_is_not_treated_as_a_grant():
+    response = {
+        "error": {
+            "reason": (
+                "Error occurred in OpenSearch engine: Unexpected exception "
+                "cluster:admin/opensearch/ppl"
+            )
+        }
+    }
+    assert parse_missing_privileges(response) == ()
+
+
 def test_workflow_rejects_duplicate_ids():
     document = workflow()
     document["steps"].append(document["steps"][0])

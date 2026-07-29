@@ -38,6 +38,8 @@ python skills/permission-compiler/scripts/permission_compiler.py verify \
 - Python 3.11+ and standard-library runtime dependencies.
 - Tests must not require a live cluster; end-to-end tests use disposable
   containers and must be separately marked.
+- Run the live demo only against the pinned disposable Compose cluster. Never
+  point setup or role-application helpers at a production endpoint.
 - Keep `SKILL.md` under 500 lines and move detail to focused references.
 - Every emitted permission must retain step and evidence provenance.
 - A change to compiler behavior requires a unit test.

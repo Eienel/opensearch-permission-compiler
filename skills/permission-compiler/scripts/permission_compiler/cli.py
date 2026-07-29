@@ -44,8 +44,22 @@ def _permission_check_path(path: str) -> str:
     return urlunsplit(("", "", parts.path, urlencode(query), parts.fragment))
 
 
-def _ssl_context(ca_cert: str | None) -> ssl.SSLContext:
-    return ssl.create_default_context(cafile=ca_cert) if ca_cert else ssl.create_default_context()
+def _ssl_context(
+    ca_cert: str | None, skip_hostname_verification: bool = False
+) -> ssl.SSLContext:
+    if skip_hostname_verification and not ca_cert:
+        raise WorkflowError(
+            "--skip-hostname-verification requires --ca-cert so certificate "
+            "chain verification remains enabled"
+        )
+    context = (
+        ssl.create_default_context(cafile=ca_cert)
+        if ca_cert
+        else ssl.create_default_context()
+    )
+    if skip_hostname_verification:
+        context.check_hostname = False
+    return context
 
 
 def _probe_step(
@@ -54,6 +68,7 @@ def _probe_step(
     username: str,
     password: str,
     ca_cert: str | None,
+    skip_hostname_verification: bool,
     timeout: float,
 ) -> dict[str, Any]:
     path = _permission_check_path(step["path"])
@@ -68,7 +83,9 @@ def _probe_step(
         request.add_header("Content-Type", "application/json")
     try:
         with urlopen(
-            request, context=_ssl_context(ca_cert), timeout=timeout
+            request,
+            context=_ssl_context(ca_cert, skip_hostname_verification),
+            timeout=timeout,
         ) as response:
             payload = response.read().decode("utf-8")
             parsed = json.loads(payload) if payload else {}
@@ -121,6 +138,7 @@ def _command_probe(args: argparse.Namespace) -> int:
             username=username,
             password=password,
             ca_cert=args.ca_cert,
+            skip_hostname_verification=args.skip_hostname_verification,
             timeout=args.timeout,
         )
         evidence.append({"step_id": step["id"], "response": response})
@@ -169,6 +187,14 @@ def build_parser() -> argparse.ArgumentParser:
     probe_parser.add_argument("--url")
     probe_parser.add_argument("--username")
     probe_parser.add_argument("--ca-cert")
+    probe_parser.add_argument(
+        "--skip-hostname-verification",
+        action="store_true",
+        help=(
+            "verify the certificate chain but skip hostname matching; use only "
+            "with disposable demo certificates and --ca-cert"
+        ),
+    )
     probe_parser.add_argument("--timeout", type=float, default=10.0)
     probe_parser.set_defaults(handler=_command_probe)
 

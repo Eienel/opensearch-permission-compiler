@@ -36,9 +36,9 @@ This is the first production-oriented foundation:
 - Agent Skills specification-compatible `SKILL.md`;
 - unit tests with no running cluster required.
 
-The next milestone is a Docker-backed end-to-end fixture that applies the
-candidate to a disposable test user and proves convergence across multiple
-OpenSearch versions.
+The repository also includes a Docker-backed end-to-end fixture that applies a
+reviewed candidate to a disposable test user and proves required operations are
+allowed while forbidden operations stay denied.
 
 ## Quick start
 
@@ -103,6 +103,35 @@ capability-contract format.
 ```bash
 python -m pytest
 ```
+
+## Live OpenSearch demo
+
+The disposable integration pins OpenSearch 3.7.0, enables the Security plugin,
+binds port 9200 to localhost only, and deletes its Docker volume afterward:
+
+```powershell
+.\scripts\demo.ps1
+```
+
+The demo uses OpenSearch's bundled development certificates. It verifies the
+copied CA chain while explicitly skipping hostname matching because the demo
+node certificate names the container rather than `localhost`. Do not use that
+option for production clusters.
+
+To run the same demo, retain a sanitized transcript, and render a short MP4:
+
+```powershell
+.\scripts\record_demo.ps1
+```
+
+Recording requires FFmpeg and Pillow. The video is generated only from the
+dedicated demo transcript and verification artifacts; it never captures the
+desktop or credential environment.
+
+[Watch the verified live-demo recording](demo/permission-compiler-live-demo.mp4).
+
+See [the integration guide](integration/README.md) for prerequisites, safety
+boundaries, artifact locations, and cleanup behavior.
 
 ## License
 

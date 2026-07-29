@@ -14,3 +14,4 @@ All notable changes to this project will be documented here.
 - Permission provenance and review-risk reporting.
 - Positive and negative post-application verification.
 - Unit and HTTP-level safety tests.
+- Disposable OpenSearch 3.7.0 live integration harness and one-command demo.
